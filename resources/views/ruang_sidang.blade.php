@@ -363,7 +363,11 @@
         @auth
             <div class="user-bar">
                 <div class="user-info">
-                    👤 Masuk sebagai: <strong>{{ Auth::user()->name }}</strong> ({{ Auth::user()->email }})
+                    👤 Masuk sebagai: <strong>{{ Auth::user()->name }}</strong> 
+                    <span style="display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: bold; text-transform: uppercase; margin-left: 6px; {{ Auth::user()->isAdmin() ? 'background: #fed7d7; color: #9b2c2c;' : 'background: #c6f6d5; color: #22543d;' }}">
+                        {{ Auth::user()->role }}
+                    </span>
+                    <span style="color: #718096; font-size: 13px; margin-left: 4px;">({{ Auth::user()->email }})</span>
                 </div>
                 <form action="{{ route('logout') }}" method="POST" style="margin: 0;">
                     @csrf
@@ -563,11 +567,13 @@
                                 <td>
                                     <div class="action-cell" style="justify-content: center;">
                                         <a href="{{ route('ruang-sidang.edit', $ruang) }}" class="btn btn-secondary btn-sm">Edit</a>
-                                        <form action="{{ route('ruang-sidang.destroy', $ruang) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus ruang {{ $ruang->kode_ruang }}?');">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
-                                        </form>
+                                        @if (Auth::user()->isAdmin())
+                                            <form action="{{ route('ruang-sidang.destroy', $ruang) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus ruang {{ $ruang->kode_ruang }}?');">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
+                                            </form>
+                                        @endif
                                     </div>
                                 </td>
                             </tr>

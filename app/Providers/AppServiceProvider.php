@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Models\User;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -19,6 +21,14 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // Gate Authorization untuk aksi Hapus Ruang Sidang (Khusus Admin)
+        Gate::define('delete-ruang', function (User $user) {
+            return $user->isAdmin();
+        });
+
+        // Gate Authorization untuk Kelola Ruang Sidang (Admin & Petugas)
+        Gate::define('manage-ruang', function (User $user) {
+            return in_array($user->role, ['admin', 'petugas'], true);
+        });
     }
 }
